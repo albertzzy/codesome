@@ -40,3 +40,59 @@ function doGenTree(start, end){
     }
     return treelist;
 }
+
+
+
+
+/* 
+    将字符串Z型遍历
+*/
+var convert = function(s, numRows) {
+    let verticalFlag = true
+    let  i=0, len = s.length;
+    let matrix = [];
+    let temp = [];
+    let step = numRows-1;
+    while(i < len){
+        // codemind: 主要就是取余的计算
+        verticalFlag = i % ((numRows-1) * 2) <= numRows-1 || numRows === 1
+          
+        if(verticalFlag){
+           step = numRows-1;
+
+            if(temp.length <=  numRows){
+                temp.push(s[i])
+                i++;
+            }
+            if(temp.length === numRows || i === len){
+                matrix.push([...temp])
+                temp = []
+            }
+        }else{
+            temp = new Array(numRows).fill('#')
+            temp[step-1] = s[i];
+            matrix.push([...temp])
+            temp = []
+            i++
+            step--
+        }
+    }
+
+    // print matrix
+    let k = 0;
+    let result = ''
+    while(k < numRows){
+      for(let j=0;j<matrix.length;j++){
+        let arr = matrix[j]
+        if(typeof arr[k]!== 'undefined' && arr[k] !== '#'){
+          result += arr[k]  
+        }
+      }
+      k++
+    }
+   
+    return result;
+};
+
+
+
