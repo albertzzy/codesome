@@ -46,6 +46,7 @@ function doGenTree(start, end){
 
 /* 
     将字符串Z型遍历
+    codemind: 主要就是取余的计算
 */
 var convert = function(s, numRows) {
     let verticalFlag = true
@@ -96,3 +97,76 @@ var convert = function(s, numRows) {
 
 
 
+/* 
+    将二叉树以前序遍历顺序拉成链表
+    codemind: 用last变量记录前一个遍历节点
+    index: 114
+*/
+// 解法一： 从下到上
+var flatten = function(root) {
+    let last = null
+    function doFlatten(root){
+      if(!root){
+        return;
+      }
+      
+      doFlatten(root.right)
+      doFlatten(root.left)
+      root.right = last;
+      root.left = null;
+      last = root
+    }
+    doFlatten(root)
+ };
+
+// 解法二： 从上到下
+function flatten(root){
+    while (root != null) { 
+        if (root.left == null) {
+            root = root.right;
+        } else {
+            // 找左子树最右边的节点
+            let pre = root.left;
+            while (pre.right != null) {
+                pre = pre.right;
+            } 
+            //将原来的右子树接到左子树的最右边节点
+            pre.right = root.right;
+            // 将左子树插入到右子树的地方
+            root.right = root.left;
+            root.left = null;
+            // 考虑下一个节点
+            root = root.right;
+        }
+    }
+}
+
+
+// 解法3： 迭代后序遍历 - 解法1的迭代版本，同样也是从下到上
+function flatten(root) { 
+    let toVisit = [];
+    let cur = root;
+    let pre = null;
+
+    while (cur || toVisit.length) {
+        while (cur) {
+            toVisit.push(cur); // 添加根节点
+            cur = cur.right; // 递归添加右节点
+        }
+        cur = toVisit[toVisit.length-1] // 已经访问到最右的节点了
+        // 在不存在左节点或者右节点已经访问过的情况下，访问根节点
+        // ！！！keycode: cur.left == pre 
+        if (!cur.left || cur.left == pre) {
+            toVisit.pop(); 
+            cur.right = pre;
+            cur.left = null;
+            pre = cur;
+            cur = null;
+        } else {
+            cur = cur.left; // 左节点还没有访问过就先访问左节点
+        }
+    }       
+}
+
+
+ 
